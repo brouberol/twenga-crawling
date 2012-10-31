@@ -1,0 +1,19 @@
+{% extends '_layout.html' %}
+{% block table %}
+    <table class="sortable" border="1">
+    <tr>
+        <td>Nom</td>
+        <td>Prix (€)</td>
+        <td>URL</td>
+        <td>En stock?</td>
+    </tr>
+    {% for product in products %}
+    <tr>
+        <td>{{ product['title'] | wordwrap }}</td>
+        <td>{{ product['price'] | float }}</td>
+        <td>{{ product['url'] | urlize(40) }}</td>
+        <td>{{ product['in_stock'] | replace('True', 'oui') | replace('False', 'non') }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
