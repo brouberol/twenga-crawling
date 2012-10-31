@@ -128,9 +128,13 @@ def render_results(products):
 
 def main():
     twenga_url = "http://vaisselle.twenga.fr/theiere.html"
+    print "Extracting HTML data from %s..." % (twenga_url)
     soup = soupify_website(twenga_url)
-    teapots = extract_products(soup)[:10]  # Extract 10 first teapots
-    features = product_features(teapots)   # Extract teapots features
+    print "Scraping the 10 latest items..."
+    teapots = extract_products(soup)[:10]
+    print "Scraping products features..."
+    features = products_features(teapots)
+    print "Generating result webpage..."
     with codecs.open(
             join(dirname(__file__), 'index.html'), 'w', 'utf-8') as target:
         target.write(render_results(features))  # Render template with features
