@@ -71,7 +71,10 @@ def twenga_redirect(url):
     # Return it if it can be found. Else, return the last redirection
     # point
     redirect2 = requests.get(redirect1)
-    return redirect2.history[0].raw.get_redirect_location()
+    if redirect2.history:
+        return redirect2.history[0].raw.get_redirect_location()
+    else:
+        return redirect2
 
 
 def in_stock(url):
