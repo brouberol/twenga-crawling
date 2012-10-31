@@ -3,8 +3,8 @@
 This code was written to crawl the [http://vaisselle.twenga.fr/theiere.html](http://vaisselle.twenga.fr/theiere.html)
 website and scrape information about the 10 latest products.
 
-The main difficulty comes from the fact that a great deal of the webiste user interface is only JS based,
-and obscure voodoo redirection occur, some triggered by JS, some by a 301 response.
+The main difficulty comes from the fact that the website user interface is mainly JS based,
+and obscure voodoo redirections occur, some triggered by JS, some by a 301 response.
 What a noodle soup.
 
 ### Install it
