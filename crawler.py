@@ -51,9 +51,9 @@ def seller_url(soup):
 
     Note: The extracted URLs need to be rot-13 decoded.
     """
-    span = soup.select('span.a')[0]
+    span = soup.select('span.a')[0]  # CSS selector
     uggc_url = span.attrs['data-erl']
-    return uggc_url.decode('rot-13')
+    return uggc_url.decode('rot-13')  # return decoded url
 
 
 def twenga_redirect(url):
@@ -104,18 +104,21 @@ def product_features(products):
     features = []
     for i, product in enumerate(products):
         features.append(dict())
-        features[i]['title'] = title(product)
-        features[i]['price'] = price(product)
-        features[i]['url'] = twenga_redirect(seller_url(product))
-        features[i]['in_stock'] = in_stock(features[i]['url'])
+        features[i]['title'] = title(product)  # extract title
+        features[i]['price'] = price(product)  # extract price
+        features[i]['url'] = twenga_redirect(seller_url(product))  # vendor url
+        features[i]['in_stock'] = in_stock(features[i]['url'])  # availability
     return features
 
 
 def render_results(products):
     """ Render an HTML template with the argument results. """
+    # add template to Jinja environment
     loader = ChoiceLoader([FileSystemLoader(
         join(dirname(__file__), 'templates'))])
     env = Environment(loader=loader)
+
+    # Render table.html template with products features
     template = env.get_template('table.html')
     return template.render(products=products)
 
@@ -124,10 +127,10 @@ def main():
     twenga_url = "http://vaisselle.twenga.fr/theiere.html"
     soup = soupify_website(twenga_url)
     teapots = extract_products(soup)[:10]  # Extract 10 first teapots
-    features = product_features(teapots)
+    features = product_features(teapots)   # Extract teapots features
     with codecs.open(
             join(dirname(__file__), 'index.html'), 'w', 'utf-8') as target:
-        target.write(render_results(features))
+        target.write(render_results(features))  # Render template with features
 
 
 if __name__ == '__main__':
