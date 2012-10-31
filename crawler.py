@@ -25,8 +25,7 @@ from jinja2 import Environment, ChoiceLoader, FileSystemLoader
 
 def soupify_website(url):
     """ Retrieve webpage HTML code and return its 'soup' version. """
-    html_file, headers = urlretrieve(url)
-    return BeautifulSoup(open(html_file))
+    return BeautifulSoup(open(urlretrieve(url)[0]))
 
 
 def extract_products(soup):
@@ -41,9 +40,9 @@ def title(soup):
 
 def price(soup):
     """ Extract the price from a product soup using a CSS selector. """
-    price = soup.select('span.price')[0].contents[1].text[:-1]
-    price = price.replace(',', '.').replace('\n', '').strip()
-    return price
+    product_price = soup.select('span.price')[0].contents[1].text[:-1]
+    product_price = product_price.replace(',', '.').replace('\n', '').strip()
+    return product_price
 
 
 def seller_url(soup):
@@ -71,8 +70,8 @@ def twenga_redirect(url):
     # Follow the redirection URL, and get its redirection point
     # Return it if it can be found. Else, return the last redirection
     # point
-    r = requests.get(redirect1)
-    return r.history[0].raw.get_redirect_location()
+    redirect2 = requests.get(redirect1)
+    return redirect2.history[0].raw.get_redirect_location()
 
 
 def in_stock(url):
@@ -86,13 +85,13 @@ def in_stock(url):
     """
     text = ' '.join([s.lower() for s in soupify_website(url).strings])
 
-    AVAILABLE = ['en stock']
-    for term in AVAILABLE:
+    available = ['en stock']
+    for term in available:
         if term in text:
             return True
 
-    UNAVAILABLE = ['indisponible', 'plus disponible', 'approvisionnement']
-    for term in UNAVAILABLE:
+    unavailable = ['indisponible', 'plus disponible', 'approvisionnement']
+    for term in unavailable:
         if term in text:
             return False
     return True
@@ -114,7 +113,8 @@ def product_features(products):
 
 def render_results(products):
     """ Render an HTML template with the argument results. """
-    loader = ChoiceLoader([FileSystemLoader(join(dirname(__file__), 'templates'))])
+    loader = ChoiceLoader([FileSystemLoader(
+        join(dirname(__file__), 'templates'))])
     env = Environment(loader=loader)
     template = env.get_template('table.html')
     return template.render(products=products)
@@ -125,7 +125,8 @@ def main():
     soup = soupify_website(twenga_url)
     teapots = extract_products(soup)[:10]  # Extract 10 first teapots
     features = product_features(teapots)
-    with codecs.open(join(dirname(__file__), 'index.html'), 'w', 'utf-8') as target:
+    with codecs.open(
+            join(dirname(__file__), 'index.html'), 'w', 'utf-8') as target:
         target.write(render_results(features))
 
 
