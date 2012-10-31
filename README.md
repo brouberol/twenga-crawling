@@ -11,7 +11,7 @@ What a noodle soup.
 Create a new [virtualenv](http://pypi.python.org/pypi/virtualenv), and install all dependencies with pip:
 
 ```bash
-$ pip install -r requirements
+$ pip install -r requirements.txt
 ```
 
 Note that gevent requires the `libevent-dev` library to compile properly.
