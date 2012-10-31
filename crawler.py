@@ -19,6 +19,9 @@ import requests
 from os.path import dirname, join
 from urllib import urlretrieve
 
+from gevent import monkey
+monkey.patch_socket()
+from gevent.pool import Pool
 from bs4 import BeautifulSoup
 from jinja2 import Environment, ChoiceLoader, FileSystemLoader
 
@@ -83,35 +86,42 @@ def in_stock(url):
 
         If terms indicating that the article is not in store are found,
         return False.
+        If terms indicating that the article is in store are found,
+        return True.
         If none of these terms are found, return True, as it's nothing
         unusual.
     """
     text = ' '.join([s.lower() for s in soupify_website(url).strings])
 
-    available = ['en stock']
-    for term in available:
-        if term in text:
-            return True
-
     unavailable = ['indisponible', 'plus disponible', 'approvisionnement']
     for term in unavailable:
         if term in text:
             return False
+
+    available = ['en stock']
+    for term in available:
+        if term in text:
+            return True
     return True
 
 
-def product_features(products):
+def product_features(product):
     """ Extract the title, price, seller URL and stock status of the
-        argument products.
+        argument product.
     """
-    features = []
-    for i, product in enumerate(products):
-        features.append(dict())
-        features[i]['title'] = title(product)  # extract title
-        features[i]['price'] = price(product)  # extract price
-        features[i]['url'] = twenga_redirect(seller_url(product))  # vendor url
-        features[i]['in_stock'] = in_stock(features[i]['url'])  # availability
+    features = {}
+    features['title'] = title(product)  # extract title
+    features['price'] = price(product)  # extract price
+    features['url'] = twenga_redirect(seller_url(product))  # vendor url
+    features['in_stock'] = in_stock(features['url'])  # availability
+    print "Features extracted!"
     return features
+
+
+def products_features(products):
+    """ Perform the features extraction asynchronously. """
+    pool = Pool(10)
+    return pool.map(product_features, products)
 
 
 def render_results(products):
