@@ -8,7 +8,7 @@ and obscure voodoo redirection occur, some triggered by JS, some by a 301 respon
 What a noodle soup.
 
 ### Install it
-Create a new [virtualenv](http://pypi.python.org/pypi/virtualenv), and install all dependancies:
+Create a new [virtualenv](http://pypi.python.org/pypi/virtualenv), and install all dependencies with pip:
 
 ```bash
 $ pip install -r requirements
@@ -22,4 +22,3 @@ $ python crawler.py
 ```
 
 An `index.html` webpage will be generated if all goes well, containing the results of the scraping.
-  
