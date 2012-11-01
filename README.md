@@ -8,9 +8,14 @@ and obscure voodoo redirections occur, some triggered by JS, some by a 301 respo
 What a noodle soup.
 
 ### Install it
-Create a new [virtualenv](http://pypi.python.org/pypi/virtualenv), and install all dependencies with pip:
+Clone the repository,
+create a new [virtualenv](http://pypi.python.org/pypi/virtualenv), activate it, and install all dependencies with pip:
 
 ```bash
+$ git clone git://github.com/BaltoRouberol/twenga-crawling.git
+$ cd twenga-crawling
+$ virtualenv .
+$ source bin/activate
 $ pip install -r requirements.txt
 ```
 
