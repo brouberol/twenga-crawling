@@ -28,7 +28,12 @@ from jinja2 import Environment, ChoiceLoader, FileSystemLoader
 
 def soupify_website(url):
     """ Retrieve webpage HTML code and return its 'soup' version. """
-    return BeautifulSoup(open(urlretrieve(url)[0]))
+    try:
+        import lxml
+    except ImportError:
+        return BeautifulSoup(open(urlretrieve(url)[0]))
+    else:
+        return BeautifulSoup(open(urlretrieve(url)[0]), "lxml")
 
 
 def extract_products(soup):
